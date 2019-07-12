@@ -1,11 +1,15 @@
 const express = require('express');
+var bodyParser = require('body-parser');
 
 const app = express();
 
 const morgan = require('morgan');
-const cors = require('cors');
+// const cors = require('cors');
 
 const mongoose = require('mongoose');
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
 const chefroutes = require('./routes/chefs');
 const dishroutes = require('./routes/recipes');
@@ -17,7 +21,7 @@ mongoose.connect(
   { useNewUrlParser: true }
 );
 
-app.use(cors());
+// app.use(cors());
 app.use(morgan('dev'));
 
 app.use('/chefs', chefroutes);
