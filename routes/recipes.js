@@ -1,12 +1,51 @@
 const express = require("express");
 const router = express.Router();
+const mongoose = require("mongoose");
+
+const Recipes = require("../models/recipe-model");
 
 router.get("/", (req, res, next) => {
-  res.status(200).json({ message: "GET all recipes" });
+Recipes.find()
+.select('name ingredients _id')
+.exec()
+.then(doc=>{
+res.status(200).json({
+  count: docs.length,
+  recipes: docs.map(doc=>{
+    return {
+      _d: doc._id,
+
+    }
+  })
+
+});
+})
+.catch(err=>{
+  console.log(err =>{
+    res.status(500).json(err)
+  })
+})
+
 });
 
 router.post("/", (req, res, next) => {
-  res.status(201).json({ message: "POST  recipes" });
+  const recipe = new Recipes({
+    _id: mongoose.Types.ObjectId(),
+    name: req.body.name,
+    ingredients: req.body.ingredients,
+    chef: req.body.chefId
+  });
+  recipe
+    .save()
+    .exec()
+    .then(res => {
+      console.log(res);
+      res.status(201).json(res);
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json(err);
+    });
 });
 
 router.get("/:dishId", (req, res, next) => {
