@@ -42,7 +42,7 @@ router.post('/', upload.single('recipeImg'), function(req, res) {
   recipe.ingredients = req.body.ingredients;
   recipe.instructions = req.body.instructions;
   recipe.picture = req.body.picture;
-  recipe.recipeImg = req.file.path
+  recipe.recipeImg =  req.file.path
   recipe.description = req.body.description;
   recipe.mealtype = req.body.mealtype;
   recipe.chef = req.body.chef;

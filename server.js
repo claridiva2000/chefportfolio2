@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-
-const ejs = require('ejs');
+const cors = require('cors')
+// const ejs = require('ejs');
 const multer = require('multer');
 
 const app = express();
@@ -13,9 +13,9 @@ const mongoose = require('mongoose');
 app.use('/public/uploads', express.static('./public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cors())
 
-
-app.set('view engine', ejs);
+// app.set('view engine', ejs);
 
 const chefroutes = require('./routes/chefs');
 const dishroutes = require('./routes/recipes');
