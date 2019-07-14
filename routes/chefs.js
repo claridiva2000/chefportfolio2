@@ -1,12 +1,13 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
-const Chefs = require("../models/chef-model");
-
-router.get("/", (req, res, next) => {
+const Chefs = require('../models/chef-model');
+const Recipes = require('../models/recipe-model');
+//Get all Chefs
+router.get('/', (req, res, next) => {
   Chefs.find()
-    .select("name email location _id")
+    .select('name email location _id')
     .exec()
     .then(docs => {
       const response = {
@@ -18,8 +19,8 @@ router.get("/", (req, res, next) => {
             location: doc.location,
             _id: doc._id,
             request: {
-              type: this.get,
-              url: "http://localhost:6000/chefs/" + doc._id
+              type: 'GET',
+              url: 'http://localhost:6000/chefs/' + doc._id
             }
           };
         })
@@ -27,7 +28,7 @@ router.get("/", (req, res, next) => {
       if (docs.length >= 0) {
         res.status(200).json(response);
       } else {
-        res.status(200).json({ message: "no entries found" });
+        res.status(200).json({ message: 'no entries found' });
       }
     })
     .catch(err => {
@@ -36,73 +37,25 @@ router.get("/", (req, res, next) => {
   // res.status(200).json({ message: 'GET all chefs' });
 });
 
-//es6 version
-router.post("/", function(req, res, next) {
-  const chef = new Chefs(req.body);
-  console.log(chef);
-  chef
-    .save()
-    .then(chef => {
-      res.json(`Welcome, Chef ${req.param.name}`);
-    })
-    .catch(err => {
-      res.status(400).send("Sorry, Chef. I can't add you");
-    });
-});
-
-//async await version
-// router.post("/", async function(req, res, next) {
-//   const chefBody = req.body;
-//   const chef = new Chefs({
-//     _id: new mongoose.Types.ObjectId(),
-//     name: req.body.name,
-//     email: req.body.email,
-//     location: req.body.location
-//   });
-
-//   try {
-//     let newChef = await chef.save();
-//     res.status(201).send({ response: `Welcome, Chef ${req.param.name}` });
-//   } catch {
-//     res.status(500).send(err);
-//   }
-// });
-
-// router.post('/', function(req, res, next) {
-//   const chef = new Chefs({
-//     _id: new mongoose.Types.ObjectId(),
-//     name: req.body.name,
-//     email: req.body.email,
-//     location: req.body.location
-//   });
-//   chef.save().then(res=>{
-//     res.status(201).json({
-//       message: "Welcome Chef!",
-//       chefAdded: res
-//     })
-//   }).catch(err=>{
-//     res.status(500).json(err)
-//   })
-// });
-
-router.get("/:userId", (req, res, next) => {
+//Find Chef by ID
+router.get('/:userId', (req, res, next) => {
   const id = req.params.userId;
   Chefs.findById(id)
-    .select("name email location _id")
+    .select('name email location _id')
     .exec()
     .then(doc => {
-      console.log("from database", doc);
+      console.log('from database', doc);
       if (doc) {
         res.status(200).json({
           chef: doc,
           request: {
-            type: "GET",
-            description: "GET one Chef by _id",
-            url: "http://localhost:6000/chefs/" + doc._id
+            type: 'GET',
+            description: 'GET one Chef by _id',
+            url: 'http://localhost:6000/chefs/' + doc._id
           }
         });
       } else {
-        res.status(404).json({ message: "no valid entry found for this id" });
+        res.status(404).json({ message: 'no valid entry found for this id' });
       }
     })
     .catch(err => {
@@ -111,60 +64,90 @@ router.get("/:userId", (req, res, next) => {
     });
 });
 
-router.patch("/:userId", (req, res, next) => {
-  id = req.params.userId;
-  const updateOps = {};
-  for (const ops of req.body) {
-    updateOps[ops.propName] = ops.value;
+//Add new chef
+router.post('/', async function(req, res, next) {
+  const chefBody = req.body;
+  const chef = new Chefs({
+    _id: new mongoose.Types.ObjectId(),
+    name: req.body.name,
+    email: req.body.email,
+    location: req.body.location
+  });
+
+  try {
+    let newChef = await chef.save();
+    res.status(201).send({ response: `Welcome, Chef ${req.body.name}` });
+  } catch {
+    res.status(500).send(err);
   }
-  Chefs.update(
-    { _id: id },
-    {
-      $set: updateOps
-    }
-  )
-    .exec()
-    .then(res => {
-      console.log(result);
-      result.status(200).json({
-        message: "Account Updated, Chef."
-      });
-    })
-    .catch(err => {
+});
+
+//UPDATE chef
+router.put('/:userId', function(req, res) {
+  let chef = {};
+  chef.name = req.body.name;
+  chef.email = req.body.email;
+  chef.location = req.body.location;
+
+  let query = { _id: req.params.userId };
+
+  Chefs.updateOne(query, chef, function(err) {
+    if (err) {
       console.log(err);
-      res.status(500).json(err);
-    });
+      return;
+    } else {
+      res.status(201).json({ chef });
+    }
+  });
 });
 
-router.put("/:userId", (req, res) => {
-  Chefs.findByIdAndUpdate(req.params.userId, req.body, { new: true }),
-    res.send(`Thanks for your update ${res.name}`);
-  (err, chef) => {
-    if (err) return res.status(500).send(err);
-    return res.send(chef);
-  };
-});
+//UPDATE Chef using Patch
+// router.patch("/:userId", (req, res, next) => {
+//   id = req.params.userId;
+//   const updateOps = {};
+//   for (const ops of req.body) {
+//     updateOps[ops.propName] = ops.value;
+//   }
+//   Chefs.update(
+//     { _id: id },
+//     {
+//       $set: updateOps
+//     }
+//   )
+//     .exec()
+//     .then(res => {
+//       console.log(result);
+//       result.status(200).json({
+//         message: "Account Updated, Chef."
+//       });
+//     })
+//     .catch(err => {
+//       console.log(err);
+//       res.status(500).json(err);
+//     });
+// });
 
-router.delete("/:userId", (req, res, next) => {
-  const id = req.params.userId;
-  Chefs.deleteOne({ _id: id })
-    .exec()
-    .then(res=>{
-      res.status(200).json({
-        message: 'Chef has been removed',
-        request: {
-          type: 'DELETE',
-          url: 'http://localhost:6000/chefs/' + res._id,
-        }
-      })
-    })
-    .catch()
-    .then(res => {
-      result.status(200).json(result);
-    })
-    .catch(err => {
-      res.status(500).json(err);
-    });
-});
+//Delete Chef
+// router.delete('/:userId', async (req, res, next) => {
+//   console.log(req.params.userId);
+//   const chef = req.params.userId;
+//  Chefs.remove({_id: chef })
+//  .exec().then(res=>{
+//    res.status(200).on({ message:'Sorry to see you go, Chef!'})
+//  }).catch(err=>{
+//    res.status(500).json(err)
+//  })
+// });
 
+router.delete('/:userId', function(req, res) {
+  let query = { _id: req.params.userId };
+
+  Chefs.remove(query, function(err) {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send('Sorry to see you go, Chef!');
+    }
+  });
+});
 module.exports = router;
