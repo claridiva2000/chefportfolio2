@@ -94,7 +94,7 @@ router.get('/', (req, res, next) => {
             chef: doc.chef,
             request: {
               type: 'GET',
-              url: `http://localhost:6000/recipes/${doc._id}`,
+              url: `https://chefportfoliopt4.herokuapp.com/recipes/${doc._id}`,
               _id: doc._id
             }
           };
