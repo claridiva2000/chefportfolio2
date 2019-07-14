@@ -116,7 +116,7 @@ router.get('/:dishId', (req, res, next) => {
   const id = req.params.dishId;
   Recipes.findById(id)
     .select(
-      'name ingredients instructions picture description mealtype breakfast lunch dinner dessert snack _id chef'
+      'name ingredients instructions picture description mealtype breakfast lunch dinner dessert snack _id recipeImg chef'
     )
     .populate('chef', 'name location')
     .exec()
