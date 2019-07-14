@@ -5,18 +5,12 @@ const multer = require('multer');
 // const ejs = require('ejs');
 const path = require('path');
 
-// const fileFilter = (req, file, cb) => {
-//   if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
-//     cb(null, false);
-//   } else {
-//     cb(null, false);
-//   }
-// };
+router.get("/pics", express.static(path.join(__dirname, "./public/uploads")));
 
 //storage engine
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
-    cb(null, './public/uploads');
+    cb(null, __dirname, "./public/uploads");
   },
   filename: function(res, file, cb) {
     cb(
@@ -31,6 +25,13 @@ const upload = multer({ storage: storage});
 const Chef = require('../models/chef-model');
 const Recipes = require('../models/recipe-model');
 const Mealtype = require('../models/mealtype-model');
+
+
+//get pics
+// router.get("/recipeImg-1563093257359.jpg", (req, res) => {
+//   res.sendFile(path.join(__dirname, "./public/uploads/recipeImg-1563093257359.jpg"));
+// });
+
 
 //Add Recipe
 router.post('/', upload.single('recipeImg'), function(req, res) {
