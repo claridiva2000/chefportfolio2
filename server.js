@@ -31,7 +31,7 @@ mongoose.connect(
 app.use(morgan('dev'));
 
 app.get('/', (req, res, next)=>{
-  res.send({message: '<h1>ChefPortfolio</h1> <p>Welcome to our server.</p> <p>access chefs:</p> <p>https://chefportfoliopt4.herokuapp.com/chefs</p><p>access recipes:</p> <p>https://chefportfoliopt4.herokuapp.com/recipes</p> <p>to access individual recipes/chefs, just paste in the _id</p> <p>access pictures: still working on that. we have pictures in memory, just not sure how to get them working</p>'})
+  res.send({message: '<h1>ChefPortfolio</h1> <p>Welcome to our server.</p> <p>access chefs:</p> <p>https://chefportfoliopt4.herokuapp.com/chefs</p><p>access recipes:</p> <p>https://chefportfoliopt4.herokuapp.com/recipes</p> <p>to access individual recipes/chefs, just paste in the _id</p> <p>access pictures: still working on that. we have pictures in memory, just not sure how to get them working just yet.</p>'})
 })
 
 
