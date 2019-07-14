@@ -30,16 +30,26 @@ mongoose.connect(
 // app.use(cors());
 app.use(morgan('dev'));
 
+app.get('/', (req, res, next)=>{
+  res.send({message: '<h1>ChefPortfolio</h1> <p>Welcome to our server.</p> <p>access chefs:</p> <p>https://chefportfoliopt4.herokuapp.com/chefs</p><p>access recipes:</p> <p>https://chefportfoliopt4.herokuapp.com/recipes</p> <p>to access individual recipes/chefs, just paste in the _id</p> <p>access pictures: still working on that. we have pictures in memory, just not sure how to get them working</p>'})
+})
+
+
 app.use('/chefs', chefroutes);
 app.use('/recipes', dishroutes);
 
 app.use(express.json());
 
+
+
 app.use((req, res, next) => {
   const error = new Error('Not Found');
-  error.status(404);
+ res.status(404);
   next(error);
 });
+
+
+
 
 app.use((error, req, res, next) => {
   res.status(error.status || 500).json({

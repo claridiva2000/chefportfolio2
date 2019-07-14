@@ -94,7 +94,7 @@ router.get('/', (req, res, next) => {
             chef: doc.chef,
             request: {
               type: 'GET',
-              url: `http://localhost:6000/recipes/${doc._id}`,
+              url: `https://chefportfoliopt4.herokuapp.com/recipes/${doc._id}`,
               _id: doc._id
             }
           };
@@ -128,7 +128,7 @@ router.get('/:dishId', (req, res, next) => {
           request: {
             type: 'GET',
             description: 'GET one Chef by _id',
-            url: 'http://localhost:6000/chefs/' + doc._id
+            url: 'https://chefportfoliopt4.herokuapp.com/recipes/' + doc._id
           }
         });
       } else {
