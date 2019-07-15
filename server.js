@@ -1,21 +1,24 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const cors = require('cors')
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+
 // const ejs = require('ejs');
-const multer = require('multer');
+// const multer = require('multer');
+// app.set('view engine', ejs);
 
 const app = express();
 
 const morgan = require('morgan');
 
-const mongoose = require('mongoose');
+
 
 app.use('/public/uploads', express.static('./public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors())
+app.use(morgan('dev'));
 
-// app.set('view engine', ejs);
 
 const chefroutes = require('./routes/chefs');
 const dishroutes = require('./routes/recipes');
@@ -28,15 +31,16 @@ mongoose.connect(
 );
 
 // app.use(cors());
-app.use(morgan('dev'));
+
+app.use('/chefs', chefroutes);
+app.use('/recipes', dishroutes);
 
 app.get('/', (req, res, next)=>{
   res.send('<h1>ChefPortfolio</h1> <p>Welcome to our server.</p> <p>access chefs:</p> <p>https://chefportfoliopt4.herokuapp.com/chefs</p><p>access recipes:</p> <p>https://chefportfoliopt4.herokuapp.com/recipes</p> <p>to access individual recipes/chefs, just paste in the _id or click the link in the URL which is included for each recipe and chef</p> <p>access pictures: still working on that. we have pictures in memory, just not sure how to get them working just yet.</p>')
 })
 
 
-app.use('/chefs', chefroutes);
-app.use('/recipes', dishroutes);
+
 
 app.use(express.json());
 

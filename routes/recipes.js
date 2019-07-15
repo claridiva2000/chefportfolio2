@@ -32,17 +32,17 @@ const Mealtype = require('../models/mealtype-model');
 //   res.sendFile(path.join(__dirname, "./public/uploads/recipeImg-1563093257359.jpg"));
 // });
 
-
+// upload.single('recipeImg'),
 //Add Recipe
-router.post('/', upload.single('recipeImg'), function(req, res) {
-  console.log(req.file);
+router.post('/', function(req, res) {
+  // console.log(req.file);
   const recipe = new Recipes();
   recipe._id = new mongoose.Types.ObjectId();
   recipe.name = req.body.name;
   recipe.ingredients = req.body.ingredients;
   recipe.instructions = req.body.instructions;
   recipe.picture = req.body.picture;
-  recipe.recipeImg =  req.file.path
+  // recipe.recipeImg =  req.file.path
   recipe.description = req.body.description;
   recipe.mealtype = req.body.mealtype;
   recipe.chef = req.body.chef;
@@ -74,38 +74,41 @@ router.get('/', (req, res, next) => {
     .populate('chef', 'name location')
     .exec()
     .then(docs => {
-      const response = {
-        count: docs.length,
-        recipes: docs.map(doc => {
-          return {
-            name: doc.name,
-            ingredients: doc.ingredients,
-            instructions: doc.instructions,
-            picture: doc.picture,
-            recipeImg: doc.recipeImg,
-            description: doc.description,
-            mealtype: doc.mealtype,
-            meal_types: {
-              breakfast: doc.breakfast,
-              lunch: doc.lunch,
-              dinner: doc.dinner,
-              dessert: doc.dessert,
-              snack: doc.snack
-            },
-            chef: doc.chef,
-            request: {
-              type: 'GET',
-              url: `https://chefportfoliopt4.herokuapp.com/recipes/${doc._id}`,
-              _id: doc._id
-            }
-          };
-        })
-      };
-      if (docs.length >= 0) {
-        res.status(200).json(response);
-      } else {
-        res.status(200).json({ message: "We can't find that recipe" });
-      }
+      res.status(200).json(docs)
+      // const response = {
+      //   count: docs.length,
+      //   recipes: docs.map(doc => {
+
+          // return {
+          //   name: doc.name,
+          //   _id: doc._id,
+          //   ingredients: doc.ingredients,
+          //   instructions: doc.instructions,
+          //   picture: doc.picture,
+          //   recipeImg: doc.recipeImg,
+          //   description: doc.description,
+          //   mealtype: doc.mealtype,
+          //   meal_types: {
+          //     breakfast: doc.breakfast,
+          //     lunch: doc.lunch,
+          //     dinner: doc.dinner,
+          //     dessert: doc.dessert,
+          //     snack: doc.snack
+          //   },
+          //   chef: doc.chef,
+          //   // request: {
+          //   //   type: 'GET',
+          //   //   url: `https://chefportfoliopt4.herokuapp.com/recipes/${doc._id}`,
+             
+          //   // }
+          // };
+        // })
+      // };
+      // if (docs.length >= 0) {
+      //   res.status(200).json(doc);
+      // } else {
+      //   res.status(200).json({ message: "We can't find that recipe" });
+      // }
     })
     .catch(err => {
       res.status(500).json(err);
