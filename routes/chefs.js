@@ -7,7 +7,7 @@ const Recipes = require('../models/recipe-model');
 //Get all Chefs
 router.get('/', (req, res, next) => {
   Chefs.find()
-    .select('name email location _id')
+    .select('name email location profilepic _id')
     .exec()
     .then(docs => {
       const response = {
@@ -17,6 +17,7 @@ router.get('/', (req, res, next) => {
             name: doc.name,
             email: doc.email,
             location: doc.location,
+            profilepic: doc.profilepic,
             _id: doc._id,
             request: {
               type: 'GET',
@@ -70,8 +71,11 @@ router.post('/', async function(req, res, next) {
   const chef = new Chefs({
     _id: new mongoose.Types.ObjectId(),
     name: req.body.name,
+    password: req.body.password,
     email: req.body.email,
-    location: req.body.location
+    location: req.body.location,
+    profilepic:req.body.profilepic
+
   });
 
   try {

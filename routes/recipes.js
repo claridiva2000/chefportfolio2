@@ -45,6 +45,11 @@ router.post('/', function(req, res) {
   // recipe.recipeImg =  req.file.path
   recipe.description = req.body.description;
   recipe.mealtype = req.body.mealtype;
+  recipe.breakfast = req.body.breakfast;
+  recipe.lunch = req.body.lunch;
+  recipe.dinner = req.body.dinner;
+  recipe.dessert = req.body.dessert;
+  recipe.snack = req.body.snack;
   recipe.chef = req.body.chef;
 
   recipe.save(function(err) {
@@ -71,6 +76,7 @@ router.post('/', function(req, res) {
 //GET recipes
 router.get('/', (req, res, next) => {
   Recipes.find()
+  .select('name ingredients instructions picture description mealtype breakfast lunch dinner dessert snack')
     .populate('chef', 'name location')
     .exec()
     .then(docs => {
@@ -88,17 +94,13 @@ router.get('/', (req, res, next) => {
           //   recipeImg: doc.recipeImg,
           //   description: doc.description,
           //   mealtype: doc.mealtype,
-          //   meal_types: {
           //     breakfast: doc.breakfast,
           //     lunch: doc.lunch,
           //     dinner: doc.dinner,
           //     dessert: doc.dessert,
-          //     snack: doc.snack
-          //   },
+          //     snack: doc.snack,
           //   chef: doc.chef,
-          //   // request: {
-          //   //   type: 'GET',
-          //   //   url: `https://chefportfoliopt4.herokuapp.com/recipes/${doc._id}`,
+      
              
           //   // }
           // };

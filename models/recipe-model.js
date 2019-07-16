@@ -5,7 +5,7 @@ const recipeSchema = mongoose.Schema({
   name: { type: String, required: true },
   ingredients: { type: String, required: true },
   instructions: { type: String },
-  picture: { type: String },
+  picture: { type: String, default: 'https://files.slack.com/files-pri/T4JUEB3ME-FL404HDB5/logo.jpg' },
   // recipeImg: {type:String },
   description: { type: String },
   mealtype: { type: String },
